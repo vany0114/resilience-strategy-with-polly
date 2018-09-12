@@ -178,7 +178,8 @@ namespace Resilience.Polly.Sql.Policies
         /// </summary>
         public static ISyncPolicy GetFallbackPolicy<T>(Func<T> action) =>
             Policy
-                .Handle<SqlException>()
+                .Handle<SqlException>(ex => SqlTransientErrors.Contains(ex.Number))
+                .Or<SqlException>(ex => SqlTransactionErrors.Contains(ex.Number))
                 .Or<TimeoutRejectedException>()
                 .Or<BrokenCircuitException>()
                 .Fallback(() => action(),
@@ -194,7 +195,8 @@ namespace Resilience.Polly.Sql.Policies
         /// </summary>
         public static ISyncPolicy GetFallbackPolicy(Action action) =>
             Policy
-                .Handle<SqlException>()
+                .Handle<SqlException>(ex => SqlTransientErrors.Contains(ex.Number))
+                .Or<SqlException>(ex => SqlTransactionErrors.Contains(ex.Number))
                 .Or<TimeoutRejectedException>()
                 .Or<BrokenCircuitException>()
                 .Fallback(action,

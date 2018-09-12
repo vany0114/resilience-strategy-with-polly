@@ -180,7 +180,8 @@ namespace Resilience.Polly.Sql.Policies
         /// </summary>
         public static IAsyncPolicy GetFallbackPolicy<T>(Func<Task<T>> action) =>
             Policy
-                .Handle<SqlException>()
+                .Handle<SqlException>(ex => SqlTransientErrors.Contains(ex.Number))
+                .Or<SqlException>(ex => SqlTransactionErrors.Contains(ex.Number))
                 .Or<TimeoutRejectedException>()
                 .Or<BrokenCircuitException>()
                 .FallbackAsync(cancellationToken => action(),
@@ -197,7 +198,8 @@ namespace Resilience.Polly.Sql.Policies
         /// </summary>
         public static IAsyncPolicy GetFallbackPolicy(Func<Task> action) =>
             Policy
-                .Handle<SqlException>()
+                .Handle<SqlException>(ex => SqlTransientErrors.Contains(ex.Number))
+                .Or<SqlException>(ex => SqlTransactionErrors.Contains(ex.Number))
                 .Or<TimeoutRejectedException>()
                 .Or<BrokenCircuitException>()
                 .FallbackAsync(cancellationToken => action(),
