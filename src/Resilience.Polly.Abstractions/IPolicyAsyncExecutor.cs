@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Polly;
+using Polly.Registry;
+using System;
 using System.Threading.Tasks;
 
 namespace Resilience.Polly.Abstractions
@@ -12,8 +14,14 @@ namespace Resilience.Polly.Abstractions
     /// </summary>
     public interface IPolicyAsyncExecutor
     {
+        PolicyRegistry PolicyRegistry { get; set; }
+
         Task<T> ExecuteAsync<T>(Func<Task<T>> action);
 
+        Task<T> ExecuteAsync<T>(Func<Context, Task<T>> action, Context context);
+
         Task ExecuteAsync(Func<Task> action);
+
+        Task ExecuteAsync(Func<Context, Task> action, Context context);
     }
 }

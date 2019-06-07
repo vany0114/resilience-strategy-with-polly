@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Polly;
+using Polly.Registry;
 
 namespace Resilience.Polly.Abstractions
 {
@@ -10,33 +11,40 @@ namespace Resilience.Polly.Abstractions
     {
         private readonly IEnumerable<IAsyncPolicy> _asyncPolicies;
 
+        public PolicyRegistry PolicyRegistry { get; set; }
+
         public PolicyAsyncExecutor(IEnumerable<IAsyncPolicy> policies)
         {
             _asyncPolicies = policies ?? throw new ArgumentNullException(nameof(policies));
+
+            PolicyRegistry = new PolicyRegistry
+            {
+                [nameof(PolicyAsyncExecutor)] = Policy.WrapAsync(_asyncPolicies.ToArray())
+            };
         }
 
         public async Task<T> ExecuteAsync<T>(Func<Task<T>> action)
         {
-            return await AsyncExecutor(action);
+            var policy = PolicyRegistry.Get<IAsyncPolicy>(nameof(PolicyAsyncExecutor));
+            return await policy.ExecuteAsync(action);
         }
 
         public async Task ExecuteAsync(Func<Task> action)
         {
-            await AsyncExecutor(action);
+            var policy = PolicyRegistry.Get<IAsyncPolicy>(nameof(PolicyAsyncExecutor));
+            await policy.ExecuteAsync(action);
         }
 
-        private async Task AsyncExecutor(Func<Task> action)
+        public async Task<T> ExecuteAsync<T>(Func<Context, Task<T>> action, Context context)
         {
-            // Executes the action applying all the policies defined in the wrapper
-            var policyWrap = Policy.WrapAsync(_asyncPolicies.ToArray());
-            await policyWrap.ExecuteAsync(action);
+            var policy = PolicyRegistry.Get<IAsyncPolicy>(nameof(PolicyAsyncExecutor));
+            return await policy.ExecuteAsync(action, context);
         }
 
-        private async Task<T> AsyncExecutor<T>(Func<Task<T>> action)
+        public async Task ExecuteAsync(Func<Context, Task> action, Context context)
         {
-            // Executes the action applying all the policies defined in the wrapper
-            var policyWrap = Policy.WrapAsync(_asyncPolicies.ToArray());
-            return await policyWrap.ExecuteAsync(action);
+            var policy = PolicyRegistry.Get<IAsyncPolicy>(nameof(PolicyAsyncExecutor));
+            await policy.ExecuteAsync(action, context);
         }
     }
 }

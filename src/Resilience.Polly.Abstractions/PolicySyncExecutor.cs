@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Polly;
+using Polly.Registry;
 
 namespace Resilience.Polly.Abstractions
 {
@@ -9,33 +10,40 @@ namespace Resilience.Polly.Abstractions
     {
         private readonly IEnumerable<ISyncPolicy> _syncPolicies;
 
+        public PolicyRegistry PolicyRegistry { get; set; }
+
         public PolicySyncExecutor(IEnumerable<ISyncPolicy> policies)
         {
             _syncPolicies = policies ?? throw new ArgumentNullException(nameof(policies));
+
+            PolicyRegistry = new PolicyRegistry
+            {
+                [nameof(PolicySyncExecutor)] = Policy.Wrap(_syncPolicies.ToArray())
+            };
         }
 
         public T Execute<T>(Func<T> action)
         {
-            return Executor(action);
+            var policy = PolicyRegistry.Get<ISyncPolicy>(nameof(PolicySyncExecutor));
+            return policy.Execute(action);
         }
 
         public void Execute(Action action)
         {
-            Executor(action);
+            var policy = PolicyRegistry.Get<ISyncPolicy>(nameof(PolicySyncExecutor));
+            policy.Execute(action);
         }
 
-        private T Executor<T>(Func<T> action)
+        public T Execute<T>(Func<Context, T> action, Context context)
         {
-            // Executes the action applying all the policies defined in the wrapper
-            var policyWrap = Policy.Wrap(_syncPolicies.ToArray());
-            return policyWrap.Execute(action);
+            var policy = PolicyRegistry.Get<ISyncPolicy>(nameof(PolicySyncExecutor));
+            return policy.Execute(action, context);
         }
 
-        private void Executor(Action action)
+        public void Execute(Action<Context> action, Context context)
         {
-            // Executes the action applying all the policies defined in the wrapper
-            var policyWrap = Policy.Wrap(_syncPolicies.ToArray());
-            policyWrap.Execute(action);
+            var policy = PolicyRegistry.Get<ISyncPolicy>(nameof(PolicySyncExecutor));
+            policy.Execute(action, context);
         }
     }
 }
