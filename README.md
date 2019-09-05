@@ -2,7 +2,7 @@
 Proposes a way to build resilience strategies using Polly and an easy and cool way to consume it using the builder pattern.
 
 ## Prerequisites and Installation Requirements
-+ [.NET Core 2.1](https://www.microsoft.com/net/download)
++ [.NET Core 2.2](https://www.microsoft.com/net/download)
 + [Visual Studio 2017 15.7 or newer](https://docs.microsoft.com/en-us/visualstudio/install/update-visual-studio?view=vs-2017)
 
 ## Instructions
