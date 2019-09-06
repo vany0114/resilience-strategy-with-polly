@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-16.04
     strategy:
       matrix:
-        dotnet: [ '2.2.108', '4.6.1' ]
+        dotnet: [ '2.2.108' ]
     name: Dotnet ${{ matrix.dotnet }}
     steps:
       - uses: actions/checkout@master
