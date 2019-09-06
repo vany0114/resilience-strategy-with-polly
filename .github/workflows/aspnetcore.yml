@@ -1,0 +1,27 @@
+name: ASP.NET Core CI
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+  schedule:
+  - cron: 0 2 * * 1-5
+
+jobs:
+  build:
+    runs-on: ubuntu-16.04
+    strategy:
+      matrix:
+        dotnet: [ '2.2.108', '3.0.100-preview8-013656', '4.5.1' ]
+    name: Dotnet ${{ matrix.dotnet }}
+    steps:
+      - uses: actions/checkout@master
+      - name: Setup dotnet core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+      - run: dotnet build --configuration Release
+
