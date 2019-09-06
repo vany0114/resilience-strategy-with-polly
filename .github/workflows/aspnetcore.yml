@@ -26,13 +26,13 @@ jobs:
       - run: dotnet build --configuration Release
   test:
     runs-on: ubuntu-latest
+    name: Test ${{ matrix.dotnet }}
     strategy:
       matrix:
         dotnet: [ '2.1.801', '2.2.108' ]
     steps:
     - uses: actions/checkout@master
-    - name: Run unit test on ${{ matrix.dotnet }}
       uses: actions/setup-dotnet@v1
       with:
           dotnet-version: ${{ matrix.dotnet }}
-    - run: dotnet build --configuration Release
+    - run: dotnet test ~/src/Resilience.Polly.Sql.Tests
