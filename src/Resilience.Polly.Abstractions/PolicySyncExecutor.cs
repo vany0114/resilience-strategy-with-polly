@@ -8,17 +8,15 @@ namespace Resilience.Polly.Abstractions
 {
     public class PolicySyncExecutor : IPolicySyncExecutor
     {
-        private readonly IEnumerable<ISyncPolicy> _syncPolicies;
-
         public PolicyRegistry PolicyRegistry { get; set; }
 
         public PolicySyncExecutor(IEnumerable<ISyncPolicy> policies)
         {
-            _syncPolicies = policies ?? throw new ArgumentNullException(nameof(policies));
+            var syncPolicies = policies ?? throw new ArgumentNullException(nameof(policies));
 
             PolicyRegistry = new PolicyRegistry
             {
-                [nameof(PolicySyncExecutor)] = Policy.Wrap(_syncPolicies.ToArray())
+                [nameof(PolicySyncExecutor)] = Policy.Wrap(syncPolicies.ToArray())
             };
         }
 

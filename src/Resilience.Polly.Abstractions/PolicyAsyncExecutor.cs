@@ -9,17 +9,15 @@ namespace Resilience.Polly.Abstractions
 {
     public class PolicyAsyncExecutor : IPolicyAsyncExecutor
     {
-        private readonly IEnumerable<IAsyncPolicy> _asyncPolicies;
-
         public PolicyRegistry PolicyRegistry { get; set; }
 
         public PolicyAsyncExecutor(IEnumerable<IAsyncPolicy> policies)
         {
-            _asyncPolicies = policies ?? throw new ArgumentNullException(nameof(policies));
+            var asyncPolicies = policies ?? throw new ArgumentNullException(nameof(policies));
 
             PolicyRegistry = new PolicyRegistry
             {
-                [nameof(PolicyAsyncExecutor)] = Policy.WrapAsync(_asyncPolicies.ToArray())
+                [nameof(PolicyAsyncExecutor)] = Policy.WrapAsync(asyncPolicies.ToArray())
             };
         }
 
