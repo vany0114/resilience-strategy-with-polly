@@ -16,13 +16,23 @@ jobs:
     strategy:
       matrix:
         dotnet: [ '2.1.801', '2.2.108' ]
-    runs-on: ${{ matrix.platform }}
     name: Dotnet ${{ matrix.dotnet }}
     steps:
       - uses: actions/checkout@master
-      - name: Setup dotnet core
+      - name: Build solution
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: ${{ matrix.dotnet }}
       - run: dotnet build --configuration Release
-
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet: [ '2.1.801', '2.2.108' ]
+    steps:
+    - uses: actions/checkout@master
+    - name: Run unit test on ${{ matrix.dotnet }}
+      uses: actions/setup-dotnet@v1
+      with:
+          dotnet-version: ${{ matrix.dotnet }}
+    - run: dotnet build --configuration Release
