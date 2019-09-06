@@ -32,4 +32,4 @@ jobs:
         dotnet: [ '2.1.801', '2.2.108' ]
     steps:
     - name: dotnet test
-    - run: dotnet test ~/src/Resilience.Polly.Sql.Tests
+      run: dotnet test ~/src/Resilience.Polly.Sql.Tests
