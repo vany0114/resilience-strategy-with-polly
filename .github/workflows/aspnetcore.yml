@@ -31,8 +31,7 @@ jobs:
       matrix:
         dotnet: [ '2.1.801', '2.2.108' ]
     steps:
-    - uses: actions/checkout@master
-      uses: actions/setup-dotnet@v1
+      -uses: actions/setup-dotnet@v1
       with:
           dotnet-version: ${{ matrix.dotnet }}
     - run: dotnet test ~/src/Resilience.Polly.Sql.Tests
