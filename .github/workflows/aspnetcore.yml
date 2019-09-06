@@ -33,4 +33,9 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: dotnet test
-      run: dotnet test ~/work/resilience-strategy-with-polly/resilience-strategy-with-polly/src/Resilience.Polly.Sql.Tests/Resilience.Polly.Sql.Tests.csproj
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ matrix.dotnet }}
+      run: |
+        dotnet build --configuration Release
+        dotnet test ~/work/resilience-strategy-with-polly/resilience-strategy-with-polly/src/Resilience.Polly.Sql.Tests/Resilience.Polly.Sql.Tests.csproj
