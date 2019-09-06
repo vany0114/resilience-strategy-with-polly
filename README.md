@@ -1,4 +1,6 @@
 # Building resilient strategies with Polly 
+[![Actions Status](https://github.com/vany0114/resilience-strategy-with-polly/workflows/ASP.NET%20Core%20CI/badge.svg)](https://github.com/vany0114/resilience-strategy-with-polly/actions)
+
 Proposes a way to build resilience strategies using Polly and an easy and cool way to consume it using the builder pattern.
 
 ## Prerequisites and Installation Requirements
