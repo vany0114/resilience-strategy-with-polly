@@ -13,3 +13,6 @@ Proposes a way to build resilience strategies using Polly and an easy and cool w
 3. Run integration test under `Resilience.Polly.Sql.Tests` project.
 
 Visit my blog <http://elvanydev.com/resilience-with-polly/> to view the whole post about Building resilient applications with Polly.
+
+## Support
+If you find this project helpful you can [support me](http://www.paypal.me/vany0114/3)!
